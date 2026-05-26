@@ -25,16 +25,19 @@ mod threat_model_tests {
 
     #[test]
     fn failure_class_as_str_is_filesystem_safe() {
+        // Use the current `FailureClass` variants. Obsolete categories were
+        // removed during taxonomy rollout; keep this test focused on the
+        // filesystem-safety of the stable labels.
         let classes = [
             FailureClass::Auth,
             FailureClass::Budget,
-            FailureClass::Storage,
-            FailureClass::Arithmetic,
-            FailureClass::Context,
-            FailureClass::Object,
-            FailureClass::Crypto,
-            FailureClass::Events,
+            FailureClass::State,
+            FailureClass::Xdr,
+            FailureClass::InvalidEnumTag,
+            FailureClass::EmptyInput,
+            FailureClass::OversizedInput,
             FailureClass::Unknown,
+            FailureClass::Timeout,
         ];
 
         for class in classes {
