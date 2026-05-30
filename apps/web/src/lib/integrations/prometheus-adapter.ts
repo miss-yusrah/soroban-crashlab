@@ -37,7 +37,7 @@ function toExportConfig(options: PrometheusAdapterOptions): ExportConfig {
   return {
     endpoint,
     interval: options.interval ?? 15,
-    enabled: options.enabled ?? true && endpoint.length > 0,
+    enabled: (options.enabled ?? true) && endpoint.length > 0,
     labels: options.labels ?? {},
   };
 }
