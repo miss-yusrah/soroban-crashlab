@@ -109,6 +109,17 @@ export default function ExternalAuthenticationIntegration() {
   const [probingMode, setProbingMode] = useState<SorobanAuthMode | null>(null);
 
   const connect = (id: string) => {
+    const provider = providers.find((p) => p.id === id);
+    if (!provider) return;
+
+    if (provider.type === 'oauth') {
+      // Redirect to GitHub OAuth authorization page
+      const clientId = 'GITHUB_CLIENT_ID'; // Placeholder
+      const state = Math.random().toString(36).substring(7);
+      window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&state=${state}&scope=read:user`;
+      return;
+    }
+
     setProviders((prev) =>
       prev.map((p) => (p.id === id ? { ...p, status: 'connecting', errorMessage: undefined } : p))
     );
