@@ -36,6 +36,10 @@ export default function NavBar() {
   }, []);
 
   useEffect(() => {
+    setDrawerOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
     if (!drawerOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setDrawerOpen(false);
