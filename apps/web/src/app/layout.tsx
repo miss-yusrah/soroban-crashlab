@@ -18,7 +18,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var k="crashlab:dark-mode",s=localStorage.getItem(k),d=s!==null?s==="true":window.matchMedia("(prefers-color-scheme: dark)").matches;if(d){document.documentElement.classList.add("dark");document.documentElement.style.setProperty("--background","#0a0a0a");document.documentElement.style.setProperty("--foreground","#ededed");document.documentElement.style.setProperty("--header-border-color","rgba(255,255,255,0.145)")}}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className={`antialiased min-h-screen flex flex-col`}
         style={{ background: "var(--background)", color: "var(--foreground)" }}
       >
