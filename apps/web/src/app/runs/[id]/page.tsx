@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { FuzzingRun, LedgerStateChange } from '../../types';
 import RunTimeline from './RunTimeline';
+import AddRunReplayHistoryWithTimestamps from '../../add-run-replay-history-with-timestamps';
 
 export const dynamic = 'force-dynamic';
 
@@ -103,6 +104,10 @@ export default async function RunDetailPage({ params }: RunDetailPageProps) {
                         </div>
                     </div>
                 )}
+
+                <div className="mt-6">
+                    <AddRunReplayHistoryWithTimestamps sourceRunId={run.id} />
+                </div>
             </div>
         </div>
     );

@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { FuzzingRun } from '../types';
+import AddRunReplayHistoryWithTimestamps from '../add-run-replay-history-with-timestamps';
+import AddRunReplayUi from '../add-run-replay-ui';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -78,6 +80,7 @@ export default function RunsPage() {
       )}
 
       {dataState === 'success' && (
+        <>
         <div className="card table-responsive">
           <table className="data-table">
             <thead>
@@ -112,6 +115,15 @@ export default function RunsPage() {
             </tbody>
           </table>
         </div>
+
+        <div className="section mt-6">
+          <AddRunReplayHistoryWithTimestamps />
+        </div>
+
+        <div className="section mt-6">
+          <AddRunReplayUi runs={runs} />
+        </div>
+        </>
       )}
 
       {dataState === 'success' && totalPages > 1 && (
