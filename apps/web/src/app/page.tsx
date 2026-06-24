@@ -402,6 +402,26 @@ function HomeContent() {
     };
   }, [fetchAttempt, demoLoading]);
 
+  // Re-fetch data when the page becomes visible again (e.g., after navigating back).
+  useEffect(() => {
+    let mounted = true;
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible" && mounted) {
+        setFetchAttempt(prev => prev + 1);
+      }
+    };
+    const handleFocus = () => {
+      if (mounted) setFetchAttempt(prev => prev + 1);
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    window.addEventListener("focus", handleFocus);
+    return () => {
+      mounted = false;
+      document.removeEventListener("visibilitychange", handleVisibility);
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, []);
+
   useEffect(() => {
     if (selectedRunId && !selectedRun) {
       setQueryState({ run: null });
