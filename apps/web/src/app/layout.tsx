@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "../components/ThemeProvider";
 import NavBar from "../components/NavBar";
+import AddKeyboardShortcutCheatsheetModal from "./add-keyboard-shortcut-cheatsheet-modal";
 
 export const metadata: Metadata = {
   title: "Soroban CrashLab | Smart Contract Fuzzing Platform",
@@ -38,6 +39,7 @@ export default function RootLayout({
       <body className="antialiased min-h-screen">
         <ThemeProvider>
           <NavBar />
+          <AddKeyboardShortcutCheatsheetModal />
           <main style={{ background: 'var(--bg)', paddingTop: '52px', minHeight: '100vh', transition: 'background 0.3s ease' }}>
             {children}
           </main>
