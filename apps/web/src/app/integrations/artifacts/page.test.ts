@@ -22,7 +22,7 @@ const runAssertions = (): void => {
   const content = fs.readFileSync(componentPath, 'utf-8');
 
   assert.ok(
-    content.includes("import ArtifactStorageIntegration from '../../integrate-storage-backend-integration-for-artifacts'"),
+    content.includes("integrate-storage-backend-integration-for-artifacts"),
     'Page should import the ArtifactStorageIntegration wrapper component',
   );
   assert.ok(

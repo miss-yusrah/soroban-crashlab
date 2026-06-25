@@ -2,7 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import type { FuzzingRun } from '../../types';
-import AddAFuzzyQueryBuilderPage51 from '../../add-a-fuzzy-query-builder-page-51';
+import dynamic from 'next/dynamic';
+
+const AddAFuzzyQueryBuilderPage51 = dynamic(
+  () => import('../../add-a-fuzzy-query-builder-page-51'),
+  { ssr: false }
+);
 
 async function fetchRuns(): Promise<FuzzingRun[]> {
   const res = await fetch('/api/runs');
