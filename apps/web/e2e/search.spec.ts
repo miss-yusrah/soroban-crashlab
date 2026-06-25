@@ -64,7 +64,7 @@ test.describe('Search / Query Builder functionality', () => {
     await searchBtn.click();
     
     await expect(page).toHaveURL(/.*\/runs\/query/);
-    await expect(page.getByRole('heading', { name: 'Fuzzy Query Builder' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Fuzzy Query Builder', level: 1 })).toBeVisible();
 
     // 2. Add filter
     const addFilterBtn = page.getByRole('button', { name: '+ Add Filter' });

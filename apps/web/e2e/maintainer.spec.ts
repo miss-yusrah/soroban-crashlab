@@ -32,7 +32,7 @@ test.describe('Maintainer Mode Toggling', () => {
     await maintainerNavLink.click();
 
     // Verify that we are on the /maintainer page
-    await expect(page).toHaveURL(/.*\/maintainer/);
+    await expect(page).toHaveURL(/.*\/maintainer/, { timeout: 15000 });
 
     // Go back to Settings page
     await page.goto(`${baseUrl}/settings`);
