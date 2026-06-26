@@ -4,6 +4,7 @@ import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import dynamic from 'next/dynamic';
+import { LoadingSpinner } from "../components/LoadingSkeleton";
 
 const AddTaggingAndLabelsUi = dynamic(
   () => import("./add-tagging-and-labels-ui"),
@@ -90,8 +91,8 @@ function DashboardContent() {
       )}
 
       {dataState === "loading" && (
-        <div role="status" aria-live="polite" className="card card-padding flex items-center justify-center py-8">
-          <span className="text-meta">Loading data...</span>
+        <div role="status" aria-live="polite" className="card card-padding py-8 sm:py-12">
+          <LoadingSpinner label="Loading dashboard..." />
         </div>
       )}
 
