@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
 import { errorResponse, successResponse, status } from '@/lib/api-response-utils';
+import { logger } from '@/lib/logger';
+import { withRouteErrorHandling } from '@/lib/route-handler';
 
-export async function GET(request: Request) {
+export const GET = withRouteErrorHandling('GET /api/runs', async (request: Request) => {
   const { searchParams } = new URL(request.url);
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -17,6 +19,12 @@ export async function GET(request: Request) {
       }
     } catch {
       return errorResponse('Backend unavailable', status.serviceUnavailable);
+    } catch (error) {
+      logger.error('GET /api/runs upstream fetch failed', { error });
+      return NextResponse.json(
+        { error: 'Backend unavailable', runs: [], total: 0 },
+        { status: 503 },
+      );
     }
   }
 
@@ -29,3 +37,5 @@ export async function GET(request: Request) {
   const runs = buildMockRuns();
   return successResponse({ runs }, { total: runs.length });
 }
+  return NextResponse.json({ runs, total: runs.length });
+});
