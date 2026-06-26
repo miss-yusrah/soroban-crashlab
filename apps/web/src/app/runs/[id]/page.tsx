@@ -6,6 +6,7 @@ import RunIssueLinkPage53 from '../../add-run-issue-link-page-53';
 import RunStatusTimeline from '../../RunStatusTimeline';
 import DownloadArtifactsButton from './DownloadArtifactsButton';
 import ContractStateDiffView from '../../components/ContractStateDiffView';
+import AddRunReplayHistoryWithTimestamps from '../../add-run-replay-history-with-timestamps';
 
 interface RunDetailPageProps {
     params: Promise<{ id: string }>;
@@ -120,6 +121,10 @@ export default async function RunDetailPage({ params }: RunDetailPageProps) {
                     <h2 className="text-lg font-semibold mb-3">Ledger State Change Diff</h2>
                     <ContractStateDiffView changes={ledgerChanges} />
                 </section>
+
+                <div className="mt-6">
+                    <AddRunReplayHistoryWithTimestamps sourceRunId={run.id} />
+                </div>
             </div>
         </div>
     );

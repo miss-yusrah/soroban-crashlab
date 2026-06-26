@@ -3,6 +3,7 @@ import "./globals.css";
 import { ThemeProvider } from "../components/ThemeProvider";
 import NavBar from "../components/NavBar";
 import AddKeyboardShortcutCheatsheetModal from "./add-keyboard-shortcut-cheatsheet-modal";
+import OnboardingWizardHost from "./OnboardingWizardHost";
 
 export const metadata: Metadata = {
   title: "Soroban CrashLab | Smart Contract Fuzzing Platform",
@@ -40,6 +41,7 @@ export default function RootLayout({
         <ThemeProvider>
           <NavBar />
           <AddKeyboardShortcutCheatsheetModal />
+          <OnboardingWizardHost />
           <main style={{ background: 'var(--bg)', paddingTop: '52px', minHeight: '100vh', transition: 'background 0.3s ease' }}>
             {children}
           </main>

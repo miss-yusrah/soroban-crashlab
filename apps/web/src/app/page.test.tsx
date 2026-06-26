@@ -272,6 +272,13 @@ jest.mock('./add-run-replay-ui', () => ({
   default: () => null,
 }));
 
+jest.mock('./add-run-replay-history-with-timestamps', () => ({
+  __esModule: true,
+  default: () => null,
+  recordRunReplayHistoryEntry: jest.fn(),
+  buildReplayHistoryEntryFromReplay: jest.fn(),
+}));
+
 jest.mock('./add-bulk-actions-for-runs', () => ({
   __esModule: true,
   default: () => null,

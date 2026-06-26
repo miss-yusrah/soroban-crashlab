@@ -79,8 +79,8 @@ jobs:
           cache: pnpm
           cache-dependency-path: apps/web/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
-      - run: pnpm dlx playwright install --with-deps chromium
-      - run: pnpm dlx playwright test
+      - run: pnpm dlx @playwright/test install --with-deps chromium
+      - run: pnpm dlx @playwright/test test
 
   regression:
     needs: [core, web, soroban-example]
