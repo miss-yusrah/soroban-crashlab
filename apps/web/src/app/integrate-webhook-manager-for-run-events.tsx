@@ -29,11 +29,6 @@ export default function IntegrateWebhookManagerForRunEvents() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Load webhooks from manager on mount
-  useEffect(() => {
-    loadWebhooks();
-  }, []);
-
   const loadWebhooks = useCallback(() => {
     const registeredWebhooks = webhookManager.getWebhooks();
     setWebhooks(registeredWebhooks.map(wh => ({
@@ -43,6 +38,13 @@ export default function IntegrateWebhookManagerForRunEvents() {
       active: wh.active
     })));
   }, []);
+
+  // Load webhooks from manager on mount
+  useEffect(() => {
+    queueMicrotask(() => {
+      loadWebhooks();
+    });
+  }, [loadWebhooks]);
 
   const addWebhook = async () => {
     if (!newUrl) {

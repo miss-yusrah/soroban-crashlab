@@ -87,7 +87,9 @@ export default function ArtifactExplorer() {
   }, []);
 
   useEffect(() => {
-    loadArtifacts();
+    queueMicrotask(() => {
+      void loadArtifacts();
+    });
   }, [loadArtifacts]);
 
   const filteredArtifacts = useMemo(() => {

@@ -88,7 +88,7 @@ export async function POST(
     const current = getTags(id);
     const result = addTag(current, raw);
     if (!result.success) {
-      return jsonError(result.error, 400);
+      return jsonError(result.error ?? 'Failed to add tag', 400);
     }
   const current = getTags(id);
   const result = addTag(current, raw);
