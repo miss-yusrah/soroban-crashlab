@@ -31,6 +31,26 @@ Smart contracts on blockchain handle real assets. A single bug can lead to loss 
 - Rust stable (1.80+) and Cargo
 - Git
 
+### Local development with Docker Compose
+
+```bash
+docker compose up web
+```
+
+The dashboard is available at [http://localhost:3000](http://localhost:3000). Source is bind-mounted with a persistent `node_modules` volume for fast iteration.
+
+For a production-like image:
+
+```bash
+docker compose --profile prod up web-prod
+```
+
+To build and test the Rust core in a container:
+
+```bash
+docker compose --profile core build core
+```
+
 ### Frontend Dashboard
 
 ```bash
