@@ -147,6 +147,7 @@ cargo build --release --target wasm32-unknown-unknown
 | [Product Vision](docs/VISION.md) | 90% done criteria and roadmap alignment |
 | [Contributing Guide](CONTRIBUTING.md) | How to contribute to CrashLab |
 | [Security Policy](.github/SECURITY.md) | Vulnerability reporting and handling |
+| [Security Guide](docs/SECURITY.md) | Severity classification, contributor security model, and safe artifact handling |
 
 ---
 
