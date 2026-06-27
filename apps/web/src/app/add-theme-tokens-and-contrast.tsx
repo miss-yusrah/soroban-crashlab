@@ -214,7 +214,7 @@ export default function ThemeTokensAndContrastDemo() {
                 variables. Toggle theme and contrast to see tokens update.
               </p>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div
                   className="p-3 rounded bg-token-elevated border border-token"
                 >

@@ -3,8 +3,10 @@ import { notFound } from 'next/navigation';
 import type { LedgerStateChange } from '../../types';
 import { buildMockRuns } from '../../mockRuns';
 import RunIssueLinkPage53 from '../../add-run-issue-link-page-53';
-import RunStatusTimeline from '../../create-run-status-timeline-component-52';
+import RunStatusTimeline from '../../RunStatusTimeline';
 import DownloadArtifactsButton from './DownloadArtifactsButton';
+import ContractStateDiffView from '../../components/ContractStateDiffView';
+import AddRunReplayHistoryWithTimestamps from '../../add-run-replay-history-with-timestamps';
 
 interface RunDetailPageProps {
     params: Promise<{ id: string }>;
@@ -31,12 +33,6 @@ const ledgerChanges: LedgerStateChange[] = [
         before: '{"asset":"USDC","limit":"500","balance":"0"}',
     },
 ];
-
-const changeBadge = {
-    created: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 border-green-200 dark:border-green-900/60',
-    updated: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border-blue-200 dark:border-blue-900/60',
-    deleted: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 border-red-200 dark:border-red-900/60',
-};
 
 const formatBytes = (bytes: number): string => `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 const formatDate = (value?: string): string => (value ? new Date(value).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC' }) : 'Pending');
@@ -111,49 +107,36 @@ export default async function RunDetailPage({ params }: RunDetailPageProps) {
                             </svg>
                             Run Annotations
                         </h2>
-                        <ul className="space-y-3">
-                            {run.annotations.map((note, index) => (
-                                <li key={index} className="text-sm text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-950/60 p-4 rounded-xl border border-indigo-100 dark:border-indigo-900/40 shadow-sm leading-relaxed">
-                                    {note}
-                                </li>
-                            ))}
-                        </ul>
+                        {run.annotations && run.annotations.length > 0 ? (
+                            <ul className="space-y-3">
+                                {run.annotations.map((note, index) => (
+                                    <li key={index} className="text-sm text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-950/60 p-4 rounded-xl border border-indigo-100 dark:border-indigo-900/40 shadow-sm leading-relaxed">
+                                        {note}
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <div className="flex flex-col items-center gap-3 py-8 text-center">
+                                <div className="p-3 bg-indigo-100/60 dark:bg-indigo-900/30 rounded-full text-indigo-400 dark:text-indigo-500">
+                                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                                    </svg>
+                                </div>
+                                <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">No annotations yet</p>
+                                <p className="text-xs text-zinc-400 dark:text-zinc-500">Run results will appear here once notes are added</p>
+                            </div>
+                        )}
                     </section>
                 )}
 
                 <section>
                     <h2 className="text-lg font-semibold mb-3">Ledger State Change Diff</h2>
-                    <div className="space-y-3">
-                        {ledgerChanges.map((change) => (
-                            <article key={change.id} className="border border-zinc-200 dark:border-zinc-800 rounded-xl p-4">
-                                <div className="flex flex-wrap items-center gap-2 mb-3">
-                                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${changeBadge[change.changeType]}`}>
-                                        {change.changeType.toUpperCase()}
-                                    </span>
-                                    <span className="text-xs font-semibold text-zinc-600 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-800 rounded px-2 py-0.5">
-                                        {change.entryType}
-                                    </span>
-                                    <span className="text-xs text-zinc-500 dark:text-zinc-400 font-mono">{change.id}</span>
-                                </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                    <div>
-                                        <div className="text-xs uppercase tracking-wide text-zinc-500 dark:text-zinc-400 mb-1">Before</div>
-                                        <pre className="text-xs rounded-lg bg-zinc-100 dark:bg-zinc-950 p-3 overflow-x-auto whitespace-pre-wrap break-all">
-                                            {change.before ?? 'N/A (created)'}
-                                        </pre>
-                                    </div>
-                                    <div>
-                                        <div className="text-xs uppercase tracking-wide text-zinc-500 dark:text-zinc-400 mb-1">After</div>
-                                        <pre className="text-xs rounded-lg bg-zinc-100 dark:bg-zinc-950 p-3 overflow-x-auto whitespace-pre-wrap break-all">
-                                            {change.after ?? 'N/A (deleted)'}
-                                        </pre>
-                                    </div>
-                                </div>
-                            </article>
-                        ))}
-                    </div>
+                    <ContractStateDiffView changes={ledgerChanges} />
                 </section>
+
+                <div className="mt-6">
+                    <AddRunReplayHistoryWithTimestamps sourceRunId={run.id} />
+                </div>
             </div>
         </div>
     );

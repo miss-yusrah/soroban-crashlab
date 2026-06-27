@@ -1,5 +1,6 @@
 export {
   buildMockRuns,
+  computeSignatureHash,
   buildTriageMockRuns,
   buildReplayMockRuns,
   buildComparisonMockRuns,

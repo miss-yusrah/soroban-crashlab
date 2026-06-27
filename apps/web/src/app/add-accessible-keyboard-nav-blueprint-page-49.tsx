@@ -63,7 +63,6 @@ export default function AccessibleKeyboardNavPage() {
       // Simulate network request
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      console.log('Form submitted:', formData);
       setIsSuccess(true);
     } catch {
       setError('Form submission failed. Please try again.');
@@ -79,6 +78,7 @@ export default function AccessibleKeyboardNavPage() {
     setIsSuccess(false);
     setError(null);
   };
+
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-black py-12 px-4 sm:px-6 lg:px-8">

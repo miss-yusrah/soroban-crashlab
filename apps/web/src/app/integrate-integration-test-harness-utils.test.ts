@@ -8,7 +8,6 @@
 import {
   UIFlowTest,
   TestStatus,
-  TestSuiteSummary,
   computeTestSuiteSummary,
   isTestSuiteComplete,
   hasRunningTests,

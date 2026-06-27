@@ -20,10 +20,10 @@ import {
   logEntryAnchorHref,
   type PageDataState,
 } from './log-viewer-page-utils';
+import { useDebounce } from '../../lib/useDebounce';
 import { MOCK_LOG_ENTRIES } from '../../fixtures/logs';
 
 async function fetchLogs(): Promise<LogEntry[]> {
-  // Simulate network latency; swap for real fetch() when API is available.
   await new Promise((r) => setTimeout(r, 800));
   return MOCK_LOG_ENTRIES;
 }
@@ -57,7 +57,7 @@ function LoadingSkeleton() {
   return (
     <div role="status" aria-label="Loading logs" className="space-y-2 animate-pulse">
       {Array.from({ length: 6 }).map((_, i) => (
-        <div key={i} className="h-8 rounded bg-zinc-200 dark:bg-zinc-800" />
+        <div key={i} className="skeleton h-8 w-full" />
       ))}
       <span className="sr-only">Loading…</span>
     </div>
@@ -67,15 +67,11 @@ function LoadingSkeleton() {
 function ErrorState({ onRetry }: { onRetry: () => void }) {
   return (
     <div role="alert" className="flex flex-col items-center gap-4 py-16 text-center">
-      <svg className="w-10 h-10 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-          d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-      </svg>
-      <p className="text-zinc-600 dark:text-zinc-400">Failed to load logs. Check your connection and try again.</p>
+      <p className="text-meta">Failed to load logs. Check your connection and try again.</p>
       <button
         type="button"
         onClick={onRetry}
-        className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold transition-colors"
+        className="btn-primary text-xs sm:text-sm"
       >
         Retry
       </button>
@@ -85,7 +81,7 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
 
 function EmptyState() {
   return (
-    <p className="text-center py-16 text-zinc-500 dark:text-zinc-400">
+    <p className="text-center py-16 text-meta">
       No log entries match the current filters.
     </p>
   );
@@ -99,6 +95,7 @@ export default function LogViewerPage() {
   const [entries, setEntries] = useState<LogEntry[]>([]);
   const [levelFilter, setLevelFilter] = useState<LogLevelFilter>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const [fetchAttempt, setFetchAttempt] = useState(0);
 
   useEffect(() => {
@@ -123,22 +120,20 @@ export default function LogViewerPage() {
 
   const visible = useMemo(
     () =>
-      filterLogEntries(entries, { level: levelFilter, query: searchQuery }).sort(
+      filterLogEntries(entries, { level: levelFilter, query: debouncedSearchQuery }).sort(
         (a, b) => a.timestamp - b.timestamp,
       ),
-    [entries, levelFilter, searchQuery],
+    [entries, levelFilter, debouncedSearchQuery],
   );
 
   return (
-    <div className="max-w-5xl mx-auto w-full px-4 py-10">
+    <div className="container-full page-padding fade-in">
       {/* Page header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-          Log Viewer
-        </h1>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-          Structured run logs with search and timestamp anchors. Issue seed #56.
-        </p>
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
+        <div>
+          <h1 className="heading-page">Log Viewer</h1>
+          <p className="text-meta mt-0.5 sm:mt-1">Structured run logs with search and timestamp anchors</p>
+        </div>
       </div>
 
       {/* Toolbar */}
@@ -155,8 +150,8 @@ export default function LogViewerPage() {
                 onClick={() => setLevelFilter(opt.value)}
                 className={
                   active
-                    ? 'px-3 py-1 rounded-lg text-xs font-semibold bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
-                    : 'px-3 py-1 rounded-lg text-xs font-semibold border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800'
+                    ? 'chip chip-active text-xs'
+                    : 'chip text-xs'
                 }
               >
                 {opt.label}
@@ -173,7 +168,7 @@ export default function LogViewerPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search message or source…"
-            className="w-full px-3 py-2 text-sm rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="input-field"
           />
         </label>
       </div>
@@ -181,12 +176,12 @@ export default function LogViewerPage() {
       {/* Content area */}
       <section
         aria-labelledby="log-table-heading"
-        className="border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden"
+        className="card overflow-hidden"
       >
         <h2 id="log-table-heading" className="sr-only">Log entries</h2>
 
         {dataState === 'loading' && (
-          <div className="p-6">
+          <div className="card-padding">
             <LoadingSkeleton />
           </div>
         )}
@@ -200,51 +195,42 @@ export default function LogViewerPage() {
         {dataState === 'success' && visible.length > 0 && (
           <>
             {/* Status bar */}
-            <div className="px-4 py-2 bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-200 dark:border-zinc-800 text-xs text-zinc-500 dark:text-zinc-400">
-              Showing {visible.length} of {entries.length} entries
+            <div className="px-4 py-2" style={{ background: 'var(--bg)', borderBottom: '1px solid var(--border-color)' }}>
+              <span className="text-meta">Showing {visible.length} of {entries.length} entries</span>
             </div>
 
             {/* Log table */}
-            <div
-              role="log"
-              aria-label="Run log entries"
-              aria-live="polite"
-              className="overflow-x-auto"
-            >
-              <table className="w-full text-sm font-mono">
-                <thead className="bg-zinc-100 dark:bg-zinc-900 text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">
+            <div className="table-responsive">
+              <table className="data-table w-full text-xs sm:text-sm font-mono">
+                <thead>
                   <tr>
-                    <th scope="col" className="px-4 py-2 text-left font-semibold w-52">Timestamp</th>
-                    <th scope="col" className="px-4 py-2 text-left font-semibold w-20">Level</th>
-                    <th scope="col" className="px-4 py-2 text-left font-semibold w-32">Source</th>
-                    <th scope="col" className="px-4 py-2 text-left font-semibold">Message</th>
+                    <th scope="col" className="w-24 sm:w-52">Timestamp</th>
+                    <th scope="col" className="w-14 sm:w-20">Level</th>
+                    <th scope="col" className="hidden sm:table-cell w-32">Source</th>
+                    <th scope="col">Message</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800 bg-white dark:bg-zinc-950">
+                <tbody>
                   {visible.map((entry) => (
-                    <tr
-                      key={entry.id}
-                      id={logEntryAnchorId(entry)}
-                      className="hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors"
-                    >
-                      <td className="px-4 py-2 text-zinc-500 dark:text-zinc-400 whitespace-nowrap">
+                    <tr key={entry.id} id={logEntryAnchorId(entry)}>
+                      <td className="text-meta whitespace-nowrap text-[10px] sm:text-xs">
                         <a
                           href={logEntryAnchorHref(entry)}
-                          className="hover:text-indigo-600 dark:hover:text-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded"
+                          className="link text-[10px] sm:text-xs"
                           aria-label={`Anchor for log entry at ${formatTimestamp(entry.timestamp)}`}
                         >
                           {formatTimestamp(entry.timestamp)}
                         </a>
                       </td>
-                      <td className="px-4 py-2">
-                        <span className={`text-[10px] uppercase font-bold px-1.5 py-0.5 rounded border ${LEVEL_BADGE[entry.level]}`}>
+                      <td>
+                        <span className={`text-[9px] sm:text-[10px] uppercase font-bold px-1 sm:px-1.5 py-0.5 rounded border ${LEVEL_BADGE[entry.level]}`}>
                           {entry.level}
                         </span>
                       </td>
-                      <td className="px-4 py-2 text-cyan-700 dark:text-cyan-400 whitespace-nowrap">
+                      <td className="hidden sm:table-cell" style={{ color: '#0A66C2' }}>
                         {entry.source}
                       </td>
-                      <td className="px-4 py-2 text-zinc-800 dark:text-zinc-200 break-all">
+                      <td className="break-all text-[11px] sm:text-sm">
                         {entry.message}
                       </td>
                     </tr>

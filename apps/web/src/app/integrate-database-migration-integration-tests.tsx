@@ -170,7 +170,7 @@ export default function DatabaseMigrationIntegrationTests() {
       </div>
 
       {/* Summary bar */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
           { label: 'Total Tests', value: totalCases, color: 'zinc' },
           { label: 'Passed', value: totalPassed, color: 'emerald' },

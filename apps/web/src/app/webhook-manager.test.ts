@@ -11,8 +11,6 @@
 import {
   WebhookManager,
   WebhookConfig,
-  WebhookDeliveryResult,
-  RunEventType,
   HttpClient,
 } from './webhook-manager';
 import { FuzzingRun } from './types';

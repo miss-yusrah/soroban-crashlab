@@ -1,24 +1,20 @@
-import Link from "next/link";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import NotificationCenter from "./add-notification-center-ui";
-import DarkModeToggle from "./add-dark-mode-support";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { ThemeProvider } from "../components/ThemeProvider";
+import NavBar from "../components/NavBar";
+import AddKeyboardShortcutCheatsheetModal from "./add-keyboard-shortcut-cheatsheet-modal";
+import OnboardingWizardHost from "./OnboardingWizardHost";
+import Script from "next/script";
 
 export const metadata: Metadata = {
-  title: "Soroban CrashLab | Smart Contract Fuzzing",
+  title: "Soroban CrashLab | Smart Contract Fuzzing Platform",
   description:
-    "Intelligent mutation testing and runtime behavior tracing for Soroban smart contracts.",
+    "Intelligent mutation testing and runtime behavior tracing for Soroban smart contracts on the Stellar network.",
+  openGraph: {
+    title: "Soroban CrashLab",
+    description: "Advanced fuzzing framework for Soroban smart contracts",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -27,73 +23,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col bg-theme text-theme`}
-      >
-        <header
-          className="border-b p-6 flex items-center justify-between border-header bg-theme text-theme"
-        >
-          <div className="font-semibold text-xl tracking-tight">
-            Soroban CrashLab
-          </div>
-          <div className="flex items-center gap-4">
-            <nav className="flex gap-4 text-sm font-medium">
-              <Link
-                href="/logs"
-                className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-              >
-                Logs
-              </Link>
-              <Link
-                href="/triage"
-                className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-              >
-                Triage
-              </Link>
-              <a
-                href="/add-accessible-keyboard-nav-blueprint-page-49"
-                className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-              >
-                Keyboard Nav
-              </a>
-              <a
-                href="/implement-alerting-settings-page-54"
-                className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-              >
-                Alerts
-              </a>
-              <Link
-                href="/#reporting-templates"
-                className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-              >
-                Templates
-              </Link>
-              <a
-                href="https://github.com/SorobanCrashLab/soroban-crashlab"
-                className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                GitHub
-              </a>
-              <a
-                href="https://github.com/SorobanCrashLab/soroban-crashlab/issues"
-                className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Open Issues
-              </a>
-            </nav>
-            <NotificationCenter />
-            <DarkModeToggle />
-          </div>
-        </header>
-        <main className="flex-1 flex flex-col">{children}</main>
-        <footer className="border-t border-black/[.08] dark:border-white/[.145] p-6 text-center text-sm text-zinc-500">
-          Built for Stellar Wave 3 &middot; Soroban Ecosystem
-        </footer>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+        <Script src="/theme-script.js" strategy="beforeInteractive" />
+      </head>
+      <body className="antialiased min-h-screen">
+        <ThemeProvider>
+          <NavBar />
+          <AddKeyboardShortcutCheatsheetModal />
+          <OnboardingWizardHost />
+          <main style={{ background: 'var(--bg)', paddingTop: '52px', minHeight: '100vh', transition: 'background 0.3s ease' }}>
+            {children}
+          </main>
+        </ThemeProvider>
       </body>
     </html>
   );

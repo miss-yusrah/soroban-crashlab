@@ -176,12 +176,6 @@ where
 {
     let mut seeds_processed = 0u64;
     for seed_index in 0..total_seeds {
-        if let Some(p) = &partition {
-            if !p.owns_seed(seed_index) {
-                continue;
-            }
-        }
-
         if signal.is_cancelled() {
             return RunTerminalState::Cancelled {
                 summary: RunSummary {
@@ -189,6 +183,12 @@ where
                     cancelled_at_seed: Some(seed_index),
                 },
             };
+        }
+
+        if let Some(p) = &partition {
+            if !p.owns_seed(seed_index) {
+                continue;
+            }
         }
         if let Err(message) = work(seed_index) {
             return RunTerminalState::Failed { message };

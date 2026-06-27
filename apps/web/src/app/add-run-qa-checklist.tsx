@@ -1,4 +1,5 @@
 'use client';
+/* eslint-disable react-hooks/set-state-in-effect */
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import type { FuzzingRun } from './types';
@@ -73,7 +74,7 @@ const QA_CHECKLIST_ITEMS: QACheckItem[] = [
 
 const STORAGE_KEY = 'crashlab:run-qa-checklist:v1';
 
-export default function AddRunQAChecklist({ runs = [] }: AddRunQAChecklistProps) {
+export default function AddRunQAChecklist({ }: AddRunQAChecklistProps) {
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
   const [selectedCategory, setSelectedCategory] = useState<'all' | QACheckItem['category']>('all');
   const [isExpanded, setIsExpanded] = useState(true);

@@ -3,7 +3,6 @@
 import { useState } from "react";
 import type { FuzzingRun } from "./types";
 import { collectRunArtifacts } from "./utils/artifact-collection";
-import { downloadArtifacts } from "./utils/artifact-download";
 import { triggerBrowserDownload } from "./utils/browser-download";
 
 type DownloadState = "idle" | "loading" | "error";
