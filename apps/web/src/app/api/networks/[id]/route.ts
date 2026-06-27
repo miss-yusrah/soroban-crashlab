@@ -1,13 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { findNetworkById, removeNetwork, switchActiveNetwork } from "@/app/network-config-utils";
 import { getStore, setStore } from "../_store";
-import { successResponse, errorResponse, status } from '@/lib/api-response-utils';
+import { successResponse } from '@/lib/api-response-utils';
 import { jsonError, withRouteErrorHandling } from "@/lib/route-handler";
 
-/**
- * DELETE /api/networks/[id]
- * Removes a custom network by ID.
- */
 export const DELETE = withRouteErrorHandling(
   "DELETE /api/networks/[id]",
   async (_request: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
@@ -16,16 +12,6 @@ export const DELETE = withRouteErrorHandling(
     const store = getStore();
     const network = findNetworkById(store, id);
 
-  if (!network) {
-    return errorResponse("Network not found.", status.notFound);
-  }
-
-  if (network.isBuiltIn) {
-    return errorResponse(
-      "Built-in networks cannot be deleted.",
-      status.forbidden
-    );
-  }
     if (!network) {
       return jsonError("Network not found.", 404);
     }
@@ -42,8 +28,6 @@ export const DELETE = withRouteErrorHandling(
 
     setStore(next);
 
-  return successResponse({ success: true, deletedId: id });
-}
-    return NextResponse.json({ success: true, deletedId: id });
+    return successResponse({ success: true, deletedId: id });
   },
 );

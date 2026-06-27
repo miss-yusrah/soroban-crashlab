@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { successResponse, errorResponse, status } from './api-response-utils';
 
-export async function tryBackend<T>(
+export async function tryBackend(
   backendUrl: string | undefined,
   path: string,
   options: RequestInit,

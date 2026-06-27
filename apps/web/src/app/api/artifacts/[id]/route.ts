@@ -3,28 +3,20 @@ import {
   getArtifactById,
   deleteArtifactById,
 } from '@/lib/artifact-fs-adapter';
-import { logger } from '@/lib/logger';
-import { successResponse, errorResponse, status } from '@/lib/api-response-utils';
 import { jsonError, withRouteErrorHandling } from '@/lib/route-handler';
 
-/**
- * GET /api/artifacts/[id]
- * Downloads an artifact from CRASHLAB_ARTIFACT_DIR by ID
- */
 export const GET = withRouteErrorHandling(
   'GET /api/artifacts/[id]',
   async (_request: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
     const { id } = await params;
 
     if (!id) {
-      return errorResponse('Artifact ID is required', status.badRequest);
       return jsonError('Artifact ID is required', 400);
     }
 
     const result = await getArtifactById(id);
 
     if (!result) {
-      return errorResponse('Artifact not found', status.notFound);
       return jsonError('Artifact not found', 404);
     }
 
@@ -38,41 +30,22 @@ export const GET = withRouteErrorHandling(
         'Content-Length': metadata.sizeBytes.toString(),
       },
     });
-  } catch (error) {
-    logger.error('GET /api/artifacts/[id] failed', { error });
-    return errorResponse('Failed to download artifact', status.internalError);
-  }
-}
   },
   'Failed to download artifact',
 );
 
-/**
- * DELETE /api/artifacts/[id]
- * Deletes an artifact from CRASHLAB_ARTIFACT_DIR by ID
- */
 export const DELETE = withRouteErrorHandling(
   'DELETE /api/artifacts/[id]',
   async (_request: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
     const { id } = await params;
 
     if (!id) {
-      return errorResponse('Artifact ID is required', status.badRequest);
       return jsonError('Artifact ID is required', 400);
     }
 
     const deleted = await deleteArtifactById(id);
 
     if (!deleted) {
-      return errorResponse('Artifact not found', status.notFound);
-    }
-
-    return successResponse({ success: true, message: 'Artifact deleted successfully' });
-  } catch (error) {
-    logger.error('DELETE /api/artifacts/[id] failed', { error });
-    return errorResponse('Failed to delete artifact', status.internalError);
-  }
-}
       return jsonError('Artifact not found', 404);
     }
 
