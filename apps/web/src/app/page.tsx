@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import dynamic from 'next/dynamic';
 import { LoadingSpinner } from "../components/LoadingSkeleton";
+import { ResourceFeeInsightPanel } from "./implement-resource-fee-insight-panel-component";
 
 const AddTaggingAndLabelsUi = dynamic(
   () => import("./add-tagging-and-labels-ui"),
@@ -142,6 +143,10 @@ function DashboardContent() {
 
       {dataState === "success" && (
         <>
+          <div className="section">
+            <ResourceFeeInsightPanel runs={filteredRuns} dataState={dataState} />
+          </div>
+
           <div className="section">
             <AddTaggingAndLabelsUi
               runs={filteredRuns}
