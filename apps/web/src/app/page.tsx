@@ -50,6 +50,7 @@ function DashboardContent() {
     };
   }, []);
 
+  const recentRuns = runs.slice(0, 8);
   const setActiveTag = useCallback(
     (tag: string) => {
       const next = new URLSearchParams(searchParams.toString());
@@ -95,6 +96,38 @@ function DashboardContent() {
         </Link>
       </div>
 
+      {dataState === "success" && (
+        <div className="section mb-6">
+          <Link href="/analytics/clusters" className="card card-padding card-interactive block">
+            <h2 className="heading-section">Failure Signature Clusters</h2>
+            <p className="text-meta mt-1">Group repeated crashes by signature and open representative samples for triage.</p>
+          </Link>
+        </div>
+      )}
+
+      {dataState === "loading" && <div className="card card-padding text-meta">Loading...</div>}
+
+      {dataState === "success" && (
+        <div className="card table-responsive">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Status</th>
+                <th>Area</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recentRuns.map((run) => (
+                <tr key={run.id}>
+                  <td className="code-text text-meta">{run.id}</td>
+                  <td><span className={`badge badge-${run.status}`}>{run.status}</span></td>
+                  <td>{run.area}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       {dataState === "error" && (
         <div role="alert" className="card card-padding mb-4 sm:mb-6" style={{ borderLeft: "4px solid #CC1016" }}>
           <p className="font-semibold" style={{ color: "#CC1016" }}>Connection Error</p>
